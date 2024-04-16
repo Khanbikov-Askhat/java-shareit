@@ -11,7 +11,8 @@ import java.util.concurrent.atomic.AtomicLong;
 @Slf4j
 public class InMemoryUserStorageImpl implements UserStorage {
 
-    private final Map<Long, User> users = new HashMap<>();
+    private Map<Long, User> users = new HashMap<>();
+    private Set<String> emailUniqSet = new HashSet<>();
     private final AtomicLong nextId = new AtomicLong();
 
     @Override
@@ -23,14 +24,17 @@ public class InMemoryUserStorageImpl implements UserStorage {
     public User create(User user) {
         setNextId(user);
         users.put(user.getId(), user);
+        emailUniqSet.add(user.getEmail());
         log.info("added a new user with id {}", user.getId());
+        log.info("ПОЛЬЗОВАТЕЛЬ ДОБАВЛЕН " + user);
         return user;
     }
 
     @Override
-    public User update(User user, Long id) {
+    public User update(User oldUser, User user, Long id) {
+        emailUniqSet.remove(oldUser.getEmail());
         users.put(id, user);
-        log.info("user with id {} was updated", id);
+        emailUniqSet.add(user.getEmail());
         return user;
     }
 
@@ -41,7 +45,8 @@ public class InMemoryUserStorageImpl implements UserStorage {
 
     @Override
     public void delete(Long id) {
-        users.remove(id);
+        User deletedUser = users.remove(id);
+        emailUniqSet.remove(deletedUser.getEmail());
         log.info("user with id {} was deleted", id);
     }
 
@@ -52,7 +57,7 @@ public class InMemoryUserStorageImpl implements UserStorage {
 
     @Override
     public boolean doesEmailNotExist(String email) {
-        return !users.values().stream().anyMatch(user -> user.getEmail().equals(email));
+        return !emailUniqSet.contains(email);
     }
 
     private void setNextId(User user) {

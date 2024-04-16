@@ -44,18 +44,19 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto update(UserDto userDto, Long id) {
         User oldUser = userStorage.findUserById(id);
+        User newUser = new User(oldUser.getId(), oldUser.getName(), oldUser.getEmail());
         boolean updated = false;
         if (userDto.getEmail() != null && userStorage.doesEmailNotExist(userDto.getEmail())
-                || Objects.equals(userDto.getEmail(), oldUser.getEmail())) {
-            oldUser.setEmail(userDto.getEmail());
+                || Objects.equals(userDto.getEmail(), newUser.getEmail())) {
+            newUser.setEmail(userDto.getEmail());
             updated = true;
         }
         if (userDto.getName() != null) {
-            oldUser.setName(userDto.getName());
+            newUser.setName(userDto.getName());
             updated = true;
         }
         if (updated) {
-            return UserMapper.toUserDto(userStorage.update(oldUser, id));
+            return UserMapper.toUserDto(userStorage.update(oldUser, newUser, id));
         }
         log.warn("update of user with id {} failed", id);
         throw new EmailConflictException("Unable to update user with given email");

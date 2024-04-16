@@ -6,6 +6,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.shareit.exception.dto.ErrorResponse;
 
 import java.util.Map;
 
@@ -15,50 +16,50 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleUserValidationException(UserValidationException e) {
+    public ErrorResponse handleUserValidationException(UserValidationException e) {
         log.error(e.getMessage());
-        return Map.of("Validation for user failed", e.getMessage());
+        return new ErrorResponse("Validation for user failed", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         log.error(e.getMessage());
-        return Map.of("Validation failed", e.getMessage());
+        return new ErrorResponse("Validation failed", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleUserNotFoundException(UserNotFoundException e) {
+    public ErrorResponse handleUserNotFoundException(UserNotFoundException e) {
         log.error(e.getMessage());
-        return Map.of("Search for user failed", e.getMessage());
+        return new ErrorResponse("Search for user failed", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public Map<String, String> handleItemNotFoundException(ItemNotFoundException e) {
+    public ErrorResponse handleItemNotFoundException(ItemNotFoundException e) {
         log.error(e.getMessage());
-        return Map.of("Search for item failed", e.getMessage());
+        return new ErrorResponse("Search for item failed", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Map<String, String> handleNotOwnerForbiddenException(NotOwnerForbiddenException e) {
+    public ErrorResponse handleNotOwnerForbiddenException(NotOwnerForbiddenException e) {
         log.error(e.getMessage());
-        return Map.of("User must be the owner", e.getMessage());
+        return new ErrorResponse("User must be the owner", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.CONFLICT)
-    public Map<String, String> handleEmailConflictException(EmailConflictException e) {
+    public ErrorResponse handleEmailConflictException(EmailConflictException e) {
         log.error(e.getMessage());
-        return Map.of("Email conflict has occurred", e.getMessage());
+        return new ErrorResponse("Email conflict has occurred", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleUnknownException(Throwable e) {
+    public ErrorResponse handleUnknownException(Throwable e) {
         log.error(e.getMessage());
-        return Map.of("Unknown error has occurred", e.getMessage());
+        return new ErrorResponse("Unknown error has occurred", e.getMessage());
     }
 }

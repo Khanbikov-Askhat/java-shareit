@@ -12,6 +12,7 @@ import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -82,6 +83,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     public List<ItemDto> searchItemByText(String text) {
+        if (text.isEmpty() || text.isBlank()) {
+            return new ArrayList<>();
+        }
         return ItemMapper.mapToItemDto(itemStorage.searchItemByText(text));
     }
 }
