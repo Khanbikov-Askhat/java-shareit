@@ -3,35 +3,55 @@ package ru.practicum.shareit.item;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.booking.dto.BookingMapper;
+import ru.practicum.shareit.booking.dto.BookingViewDto;
 import ru.practicum.shareit.exception.ItemValidationException;
 import ru.practicum.shareit.exception.NotOwnerForbiddenException;
-import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.ItemMapper;
+import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
 public class ItemServiceImpl implements ItemService {
 
-    private final ItemStorage itemStorage;
+    private final ItemRepository repository;
     private final UserService userService;
-
-    @Autowired
-    public ItemServiceImpl(ItemStorage itemStorage, UserService userService) {
-        this.itemStorage = itemStorage;
-        this.userService = userService;
-    }
+    private final BookingRepository bookingRepository;
+    private final CommentRepository commentRepository;
 
     @Override
-    public List<ItemDto> getAllItemsByOwner(Long id) {
-        UserDto userDto = userService.findUserById(id);
-        return ItemMapper.mapToItemDto(itemStorage.getAllItemsByOwner(id));
+    public List<ItemViewDto> getAllItemsByOwner(Long id) {
+        Map<Long, Item> itemMap = repository.findAllByOwnerId(id)
+                .stream()
+                .collect(Collectors.toMap(Item::getId, Function.identity()));
+
+        Map<Long, List<BookingViewDto>> bookingMap = bookingRepository.findByItemIdIn(itemMap.keySet())
+                .stream()
+                .map(BookingMapper::toBookingViewDto)
+                .collect(Collectors.groupingBy(BookingViewDto::getItemId));
+
+        Map<Long, List<CommentDto>> commentMap = commentRepository.findByItemIdIn(itemMap.keySet())
+                .stream()
+                .map(CommentMapper::toCommentDto)
+                .collect(Collectors.groupingBy(CommentDto::getItemId));
+
+        return itemMap.values()
+                .stream()
+                .map(item -> ItemMapper.toItemViewForOwnerDto(item,
+                        bookingMap.getOrDefault(item.getId(), Collections.emptyList()),
+                        commentMap.getOrDefault(item.getId(), Collections.emptyList())
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override

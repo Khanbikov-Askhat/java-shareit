@@ -61,4 +61,40 @@ public class ErrorHandler {
         log.error(e.getMessage());
         return new ErrorResponse("Unknown error has occurred", e.getMessage());
     }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleBookingNotFoundException(BookingNotFoundException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("Search for booking failed", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleBookingValidationException(BookingValidationException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("Validation for booking failed", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleUnsupportedBookingStateException(UnsupportedBookingStateException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("error", e.getMessage());
+    }
+
+    // I would set code 403, but postman tests require 404
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleUserAccessForbiddenException(UserAccessForbiddenException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("User access denied", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handleCommentValidationException(CommentValidationException e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("Validation for comment failed", e.getMessage());
+    }
 }
