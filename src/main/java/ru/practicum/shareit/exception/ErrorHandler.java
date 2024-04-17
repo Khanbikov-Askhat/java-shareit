@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exception.dto.ErrorResponse;
 
+import java.util.Map;
 
 @RestControllerAdvice
 @Slf4j
@@ -56,13 +57,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleUnknownException(Throwable e) {
-        log.error(e.getMessage());
-        return new ErrorResponse("Unknown error has occurred", e.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleBookingNotFoundException(BookingNotFoundException e) {
         log.error(e.getMessage());
@@ -96,5 +90,12 @@ public class ErrorHandler {
     public ErrorResponse handleCommentValidationException(CommentValidationException e) {
         log.error(e.getMessage());
         return new ErrorResponse("Validation for comment failed", e.getMessage());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ErrorResponse handleUnknownException(Throwable e) {
+        log.error(e.getMessage());
+        return new ErrorResponse("Unknown error has occurred", e.getMessage());
     }
 }

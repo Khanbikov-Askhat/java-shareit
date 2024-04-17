@@ -8,13 +8,13 @@ import java.util.List;
 
 public interface ItemService {
 
-    List<ItemViewDto > getAllItemsByOwner(Long id);
+    List<ItemViewDto> getAllItemsByOwner(Long id);
 
     ItemDto create(ItemDto itemDto, Long id);
 
     ItemDto update(ItemDto itemDto, Long itemId, Long userId);
 
-    ItemViewDto findItemById(Long id);
+    ItemViewDto findItemById(Long itemId, Long userId);
 
     void delete(Long id);
 
