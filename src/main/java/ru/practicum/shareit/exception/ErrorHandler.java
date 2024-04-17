@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.practicum.shareit.exception.dto.ErrorResponse;
 
+import java.util.Map;
+
 
 @RestControllerAdvice
 @Slf4j
@@ -71,12 +73,12 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleUnsupportedBookingStateException(UnsupportedBookingStateException e) {
+    public Map<String, String> handleUnsupportedBookingStateException(UnsupportedBookingStateException e) {
         log.error(e.getMessage());
-        return new ErrorResponse("error", e.getMessage());
+        return Map.of("error", e.getMessage());
     }
 
-    // I would set code 403, but postman tests require 404
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ErrorResponse handleUserAccessForbiddenException(UserAccessForbiddenException e) {
