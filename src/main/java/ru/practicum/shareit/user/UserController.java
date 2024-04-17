@@ -28,13 +28,13 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto UserDtoCreateResponse(@RequestBody @Valid UserDto userDto) {
+    public UserDto userDtoCreateResponse(@RequestBody @Valid UserDto userDto) {
         log.info("пришел POST запрос /users с телом: {}", userDto);
         return userService.create(userDto);
     }
 
     @PatchMapping(value = "/{userId}")
-    public UserDto UserDtoUpdateResponse(@RequestBody @Valid UserDto userDto, @PathVariable Long userId) {
+    public UserDto userDtoUpdateResponse(@RequestBody @Valid UserDto userDto, @PathVariable Long userId) {
         log.info("пришел PATCH запрос /users/{userId} с телом: {} и userId: {}", userDto, userId);
         return userService.update(userDto, userId);
     }
@@ -46,7 +46,7 @@ public class UserController {
     }
 
     @DeleteMapping("/{userId}")
-    public void UserDtoDeleteResponse(@PathVariable Long userId) {
+    public void userDtoDeleteResponse(@PathVariable Long userId) {
         log.info("пришел DELETE запрос /users/{userId} с userId: {}", userId);
         userService.delete(userId);
     }
