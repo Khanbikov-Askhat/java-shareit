@@ -73,9 +73,9 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleUnsupportedBookingStateException(UnsupportedBookingStateException e) {
+    public ErrorResponse handleUnsupportedBookingStateException(UnsupportedBookingStateException e) {
         log.error(e.getMessage());
-        return Map.of("error", e.getMessage());
+        return new ErrorResponse("error", e.getMessage());
     }
 
 
