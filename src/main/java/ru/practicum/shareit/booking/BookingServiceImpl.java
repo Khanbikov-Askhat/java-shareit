@@ -7,7 +7,7 @@ import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingRequest;
 import ru.practicum.shareit.booking.dto.BookingResponse;
 import ru.practicum.shareit.exception.*;
-import ru.practicum.shareit.exception.BusinessObjectNotFoundException  ;
+import ru.practicum.shareit.exception.BusinessObjectNotFoundException;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -49,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponse setBookingApproval(Long userId, Boolean approved, Long bookingId) {
         UserDto userDto = userService.findUserById(userId);
         Booking booking = repository.findById(bookingId)
-                .orElseThrow(() -> new BusinessObjectNotFoundException ("Booking was not found"));
+                .orElseThrow(() -> new BusinessObjectNotFoundException("Booking was not found"));
         if (!userId.equals(booking.getItem().getOwner().getId())) {
             if (userId.equals(booking.getBooker().getId())) {
                 throw new UserAccessForbiddenException("Booker cannot set approval");
