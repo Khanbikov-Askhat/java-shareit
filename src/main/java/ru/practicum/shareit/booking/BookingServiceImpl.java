@@ -3,9 +3,9 @@ package ru.practicum.shareit.booking;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.shareit.booking.dto.BookingDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
-import ru.practicum.shareit.booking.dto.BookingOutDto;
+import ru.practicum.shareit.booking.dto.BookingRequest;
+import ru.practicum.shareit.booking.dto.BookingResponse;
 import ru.practicum.shareit.exception.*;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
@@ -28,30 +28,27 @@ public class BookingServiceImpl implements BookingService {
 
     @Override
     @Transactional
-    public BookingOutDto create(BookingDto bookingDto, Long userId) {
+    public BookingResponse create(BookingRequest bookingDto, Long userId) {
         User booker = UserMapper.toUser(userService.findUserById(userId));
         Item item = itemRepository.findById(bookingDto.getItemId())
-                .orElseThrow(() -> new ItemNotFoundException("Item was not found"));
+                .orElseThrow(() -> new ObjectNotFoundException("Item was not found"));
         if (!item.getAvailable()) {
             throw new BookingValidationException("Unable to create booking with an unavailable item");
         }
         if (userId.equals(item.getOwner().getId())) {
             throw new UserAccessForbiddenException("Owner of an item cannot rent it");
         }
-        Booking booking = BookingMapper.toBooking(bookingDto);
+        Booking booking = BookingMapper.toBooking(bookingDto, item, booker, BookingStatus.WAITING);
         checkCorrectTiming(booking);
-        booking.setItem(item);
-        booking.setBooker(booker);
-        booking.setStatus(BookingStatus.WAITING);
         return BookingMapper.toBookingDto(repository.save(booking));
     }
 
     @Override
     @Transactional
-    public BookingOutDto setBookingApproval(Long userId, Boolean approved, Long bookingId) {
+    public BookingResponse setBookingApproval(Long userId, Boolean approved, Long bookingId) {
         UserDto userDto = userService.findUserById(userId);
         Booking booking = repository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException("Booking was not found"));
+                .orElseThrow(() -> new ObjectNotFoundException("Booking was not found"));
         if (!userId.equals(booking.getItem().getOwner().getId())) {
             if (userId.equals(booking.getBooker().getId())) {
                 throw new UserAccessForbiddenException("Booker cannot set approval");
@@ -70,10 +67,10 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public BookingOutDto findBookingById(Long bookingId, Long userId) {
+    public BookingResponse findBookingById(Long bookingId, Long userId) {
         UserDto userDto = userService.findUserById(userId);
         Booking booking = repository.findById(bookingId)
-                .orElseThrow(() -> new BookingNotFoundException("Booking was not found"));
+                .orElseThrow(() -> new ObjectNotFoundException("Booking was not found"));
         if (userId.equals(booking.getBooker().getId())
                 || userId.equals(booking.getItem().getOwner().getId())) {
             return BookingMapper.toBookingDto(booking);
@@ -83,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingOutDto> findBookingsOfUser(BookingState state, Long userId) {
+    public List<BookingResponse> findBookingsOfUser(BookingState state, Long userId) {
         UserDto userDto = userService.findUserById(userId);
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;
@@ -114,7 +111,7 @@ public class BookingServiceImpl implements BookingService {
     }
 
     @Override
-    public List<BookingOutDto> findBookingsOfOwner(BookingState state, Long userId) {
+    public List<BookingResponse> findBookingsOfOwner(BookingState state, Long userId) {
         UserDto userDto = userService.findUserById(userId);
         LocalDateTime now = LocalDateTime.now();
         List<Booking> bookings;

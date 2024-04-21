@@ -9,10 +9,7 @@ import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingStatus;
 import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingViewDto;
-import ru.practicum.shareit.exception.CommentValidationException;
-import ru.practicum.shareit.exception.ItemNotFoundException;
-import ru.practicum.shareit.exception.ItemValidationException;
-import ru.practicum.shareit.exception.NotOwnerForbiddenException;
+import ru.practicum.shareit.exception.*;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
@@ -164,6 +161,6 @@ public class ItemServiceImpl implements ItemService {
 
     private Item findItemByIdFromRepository(Long itemId) {
         return repository.findById(itemId)
-                .orElseThrow(() -> new ItemNotFoundException("Item was not found"));
+                .orElseThrow(() -> new ObjectNotFoundException("Item was not found"));
     }
 }

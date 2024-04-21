@@ -6,8 +6,8 @@ import lombok.Data;
 @Data
 @Builder
 public class ErrorResponse {
-    String message;
-    String error;
+    public String message;
+    public String error;
 
     public ErrorResponse(String createdMessage, String createdMessageException) {
         this.message = createdMessage;

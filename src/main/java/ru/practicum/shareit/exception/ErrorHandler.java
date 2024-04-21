@@ -30,14 +30,14 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUserNotFoundException(UserNotFoundException e) {
+    public ErrorResponse handleUserNotFoundException(ObjectNotFoundException e) {
         log.error(e.getMessage());
         return new ErrorResponse("Search for user failed", e.getMessage());
     }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleItemNotFoundException(ItemNotFoundException e) {
+    public ErrorResponse handleItemNotFoundException(ObjectNotFoundException e) {
         log.error(e.getMessage());
         return new ErrorResponse("Search for item failed", e.getMessage());
     }
@@ -58,7 +58,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleBookingNotFoundException(BookingNotFoundException e) {
+    public ErrorResponse handleBookingNotFoundException(ObjectNotFoundException e) {
         log.error(e.getMessage());
         return new ErrorResponse("Search for booking failed", e.getMessage());
     }
