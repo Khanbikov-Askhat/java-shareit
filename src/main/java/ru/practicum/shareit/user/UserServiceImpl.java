@@ -4,8 +4,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.BusinessObjectNotFoundException;
 import ru.practicum.shareit.exception.EmailConflictException;
-import ru.practicum.shareit.exception.ObjectNotFoundException;
 import ru.practicum.shareit.exception.UserValidationException;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
@@ -64,7 +64,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findUserById(Long id) {
         return UserMapper.toUserDto(repository.findById(id)
-                .orElseThrow(() -> new ObjectNotFoundException("User was not found")));
+                .orElseThrow(() -> new BusinessObjectNotFoundException("User was not found")));
     }
 
     @Override

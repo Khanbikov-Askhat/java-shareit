@@ -7,6 +7,7 @@ import ru.practicum.shareit.booking.dto.BookingMapper;
 import ru.practicum.shareit.booking.dto.BookingRequest;
 import ru.practicum.shareit.booking.dto.BookingResponse;
 import ru.practicum.shareit.exception.*;
+import ru.practicum.shareit.exception.BusinessObjectNotFoundException  ;
 import ru.practicum.shareit.item.ItemRepository;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
@@ -31,7 +32,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponse create(BookingRequest bookingDto, Long userId) {
         User booker = UserMapper.toUser(userService.findUserById(userId));
         Item item = itemRepository.findById(bookingDto.getItemId())
-                .orElseThrow(() -> new ObjectNotFoundException("Item was not found"));
+                .orElseThrow(() -> new BusinessObjectNotFoundException("Item was not found"));
         if (!item.getAvailable()) {
             throw new BookingValidationException("Unable to create booking with an unavailable item");
         }
@@ -48,7 +49,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponse setBookingApproval(Long userId, Boolean approved, Long bookingId) {
         UserDto userDto = userService.findUserById(userId);
         Booking booking = repository.findById(bookingId)
-                .orElseThrow(() -> new ObjectNotFoundException("Booking was not found"));
+                .orElseThrow(() -> new BusinessObjectNotFoundException ("Booking was not found"));
         if (!userId.equals(booking.getItem().getOwner().getId())) {
             if (userId.equals(booking.getBooker().getId())) {
                 throw new UserAccessForbiddenException("Booker cannot set approval");
@@ -70,7 +71,7 @@ public class BookingServiceImpl implements BookingService {
     public BookingResponse findBookingById(Long bookingId, Long userId) {
         UserDto userDto = userService.findUserById(userId);
         Booking booking = repository.findById(bookingId)
-                .orElseThrow(() -> new ObjectNotFoundException("Booking was not found"));
+                .orElseThrow(() -> new BusinessObjectNotFoundException("Booking was not found"));
         if (userId.equals(booking.getBooker().getId())
                 || userId.equals(booking.getItem().getOwner().getId())) {
             return BookingMapper.toBookingDto(booking);

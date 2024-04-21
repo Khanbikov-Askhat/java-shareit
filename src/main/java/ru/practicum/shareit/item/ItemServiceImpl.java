@@ -14,6 +14,7 @@ import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.User;
+import ru.practicum.shareit.exception.BusinessObjectNotFoundException;
 import ru.practicum.shareit.user.UserService;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
@@ -161,6 +162,6 @@ public class ItemServiceImpl implements ItemService {
 
     private Item findItemByIdFromRepository(Long itemId) {
         return repository.findById(itemId)
-                .orElseThrow(() -> new ObjectNotFoundException("Item was not found"));
+                .orElseThrow(() -> new BusinessObjectNotFoundException("Item was not found"));
     }
 }

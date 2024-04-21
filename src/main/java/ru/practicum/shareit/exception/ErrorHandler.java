@@ -29,20 +29,6 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleUserNotFoundException(ObjectNotFoundException e) {
-        log.error(e.getMessage());
-        return new ErrorResponse("Search for user failed", e.getMessage());
-    }
-
-    @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleItemNotFoundException(ObjectNotFoundException e) {
-        log.error(e.getMessage());
-        return new ErrorResponse("Search for item failed", e.getMessage());
-    }
-
-    @ExceptionHandler
     @ResponseStatus(HttpStatus.FORBIDDEN)
     public ErrorResponse handleNotOwnerForbiddenException(NotOwnerForbiddenException e) {
         log.error(e.getMessage());
@@ -58,9 +44,9 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorResponse handleBookingNotFoundException(ObjectNotFoundException e) {
+    public ErrorResponse handleObjectNotFoundException(BusinessObjectNotFoundException e) {
         log.error(e.getMessage());
-        return new ErrorResponse("Search for booking failed", e.getMessage());
+        return new ErrorResponse("Search for object failed", e.getMessage());
     }
 
     @ExceptionHandler
