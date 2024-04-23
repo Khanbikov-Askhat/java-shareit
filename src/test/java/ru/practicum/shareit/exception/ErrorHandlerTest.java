@@ -21,7 +21,7 @@ public class ErrorHandlerTest {
     public void handleUserNotFoundExceptionTest() {
         ErrorResponse response = errorHandler.handleObjectNotFoundException(new BusinessObjectNotFoundException(""));
 
-        assertEquals(response, new ErrorResponse("Search for user failed", ""));
+        assertEquals(response, new ErrorResponse("Search for object failed", ""));
     }
 
     @Test
