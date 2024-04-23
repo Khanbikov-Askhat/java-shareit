@@ -3,7 +3,6 @@ package ru.practicum.shareit.exception;
 import org.junit.jupiter.api.Test;
 import ru.practicum.shareit.exception.dto.ErrorResponse;
 
-import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
